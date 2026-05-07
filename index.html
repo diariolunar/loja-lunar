@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projeto Lunar | Catálogo</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="topo">
+    <div class="logo-area">
+      <img src="assets/logo-lunar.png" alt="Projeto Lunar" class="logo">
+    </div>
+
+    <nav class="menu">
+      <a href="#">Início</a>
+      <a href="#" class="ativo">Catálogo</a>
+      <a href="#">Como funciona</a>
+      <a href="#">Sobre</a>
+      <a href="#">Contato</a>
+    </nav>
+
+    <a class="botao-principal" href="https://wa.me/5588999999999" target="_blank">
+      Solicitar Serviço
+    </a>
+  </header>
+
+  <section class="hero">
+    <div class="hero-texto">
+      <h1>Catálogo de <span>Serviços</span></h1>
+      <p>Escolha o serviço ideal para dar vida ao seu projeto. Clique em um card para ver mais detalhes.</p>
+    </div>
+  </section>
+
+  <main class="container">
+
+    <div class="filtros">
+      <button class="filtro ativo" data-categoria="todos">✦ Todos</button>
+      <button class="filtro" data-categoria="marketing">📣 Divulgação & Marketing</button>
+      <button class="filtro" data-categoria="design">✎ Design & Identidade Visual</button>
+    </div>
+
+    <section class="catalogo" id="catalogo"></section>
+
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modal-conteudo">
+      <button class="fechar" id="fecharModal">×</button>
+
+      <div class="modal-icon" id="modalIcone"></div>
+
+      <h2 id="modalTitulo"></h2>
+
+      <div class="modal-tags">
+        <span id="modalCategoria"></span>
+      </div>
+
+      <div class="modal-precos">
+        <strong id="modalPontos"></strong>
+        <strong id="modalValor"></strong>
+      </div>
+
+      <p class="modal-descricao" id="modalDescricao"></p>
+
+      <h3>✦ O que está incluso</h3>
+      <ul id="modalInclusos"></ul>
+
+      <div class="extra" id="modalExtra"></div>
+
+      <a href="#" target="_blank" class="botao-whatsapp" id="botaoWhatsapp">
+        Solicitar pelo WhatsApp ✦
+      </a>
+
+      <button class="botao-fechar" id="botaoFechar">Fechar</button>
+    </div>
+  </div>
+
+  <footer class="rodape">
+    <div>
+      <strong>Serviços de qualidade</strong>
+      <p>Feitos com carinho e criatividade</p>
+    </div>
+
+    <div>
+      <strong>Atendimento personalizado</strong>
+      <p>Seu projeto, do seu jeito</p>
+    </div>
+
+    <div>
+      <strong>Pagamento seguro</strong>
+      <p>Tranquilidade para você</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
