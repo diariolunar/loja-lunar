@@ -396,7 +396,7 @@ const botaoWhatsapp = document.getElementById("botaoWhatsapp");
   const linkGrupoWhatsapp = "https://chat.whatsapp.com/ABC123456789";
 */
 
-const linkGrupoWhatsapp = "https://chat.whatsapp.com/SEU_CODIGO_DO_GRUPO";
+const linkGrupoWhatsapp = "https://chat.whatsapp.com/LvYSa0171jXEPFCFXAaX1w";
 
 function carregarCatalogo(categoria = "todos") {
   catalogo.innerHTML = "";
