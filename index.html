@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Projeto Lunar | Catálogo</title>
+
+  <title>Loja Lunar | Catálogo de Serviços</title>
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -13,24 +14,15 @@
     <div class="logo-area">
       <img src="assets/logo-lunar.png" alt="Projeto Lunar" class="logo">
     </div>
-
-    <nav class="menu">
-      <a href="#">Início</a>
-      <a href="#" class="ativo">Catálogo</a>
-      <a href="#">Como funciona</a>
-      <a href="#">Sobre</a>
-      <a href="#">Contato</a>
-    </nav>
-
-    <a class="botao-principal" href="https://wa.me/5588999999999" target="_blank">
-      Solicitar Serviço
-    </a>
   </header>
 
   <section class="hero">
     <div class="hero-texto">
       <h1>Catálogo de <span>Serviços</span></h1>
-      <p>Escolha o serviço ideal para dar vida ao seu projeto. Clique em um card para ver mais detalhes.</p>
+      <p>
+        Escolha o serviço ideal para dar vida ao seu projeto.
+        Clique em um card para ver mais detalhes.
+      </p>
     </div>
   </section>
 
@@ -38,8 +30,10 @@
 
     <div class="filtros">
       <button class="filtro ativo" data-categoria="todos">✦ Todos</button>
+      <button class="filtro" data-categoria="escrita">✍️ Escrita e Conteúdo</button>
+      <button class="filtro" data-categoria="leitura">📖 Leitura e Avaliação</button>
       <button class="filtro" data-categoria="marketing">📣 Divulgação & Marketing</button>
-      <button class="filtro" data-categoria="design">✎ Design & Identidade Visual</button>
+      <button class="filtro" data-categoria="design">🎨 Design & Identidade</button>
     </div>
 
     <section class="catalogo" id="catalogo"></section>
@@ -48,6 +42,7 @@
 
   <div class="modal" id="modal">
     <div class="modal-conteudo">
+
       <button class="fechar" id="fecharModal">×</button>
 
       <div class="modal-icon" id="modalIcone"></div>
@@ -66,15 +61,19 @@
       <p class="modal-descricao" id="modalDescricao"></p>
 
       <h3>✦ O que está incluso</h3>
+
       <ul id="modalInclusos"></ul>
 
       <div class="extra" id="modalExtra"></div>
 
       <a href="#" target="_blank" class="botao-whatsapp" id="botaoWhatsapp">
-        Solicitar pelo WhatsApp ✦
+        Solicitar no grupo ✦
       </a>
 
-      <button class="botao-fechar" id="botaoFechar">Fechar</button>
+      <button class="botao-fechar" id="botaoFechar">
+        Fechar
+      </button>
+
     </div>
   </div>
 
@@ -90,8 +89,8 @@
     </div>
 
     <div>
-      <strong>Pagamento seguro</strong>
-      <p>Tranquilidade para você</p>
+      <strong>Catálogo Lunar</strong>
+      <p>Clique no serviço e veja os detalhes</p>
     </div>
   </footer>
 
