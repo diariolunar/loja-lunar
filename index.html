@@ -1,99 +1,169 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Loja Lunar | Catálogo de Serviços</title>
+    <title>Loja Lunar | Catálogo de Serviços</title>
+    <meta
+      name="description"
+      content="Catálogo de serviços da Loja Lunar para escrita, leitura, divulgação, marketing, design e identidade."
+    />
 
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topo">
+      <div class="logo-area">
+        <img
+          src="assets/logo-lunar.png"
+          alt="Loja Lunar"
+          class="logo"
+          width="2413"
+          height="800"
+          decoding="async"
+        />
+      </div>
+    </header>
 
-  <header class="topo">
-    <div class="logo-area">
-      <img src="assets/logo-lunar.png" alt="Projeto Lunar" class="logo">
-    </div>
-  </header>
+    <section class="hero">
+      <div class="hero-texto">
+        <h1>Catálogo de <span>Serviços</span></h1>
+        <p>
+          Escolha o serviço ideal para dar vida ao seu projeto. Clique em um
+          card para ver mais detalhes.
+        </p>
+      </div>
+    </section>
 
-  <section class="hero">
-    <div class="hero-texto">
-      <h1>Catálogo de <span>Serviços</span></h1>
-      <p>
-        Escolha o serviço ideal para dar vida ao seu projeto.
-        Clique em um card para ver mais detalhes.
-      </p>
-    </div>
-  </section>
-
-  <main class="container">
-
-    <div class="filtros">
-      <button class="filtro ativo" data-categoria="todos">✦ Todos</button>
-      <button class="filtro" data-categoria="escrita">✍️ Escrita e Conteúdo</button>
-      <button class="filtro" data-categoria="leitura">📖 Leitura e Avaliação</button>
-      <button class="filtro" data-categoria="marketing">📣 Divulgação & Marketing</button>
-      <button class="filtro" data-categoria="design">🎨 Design & Identidade</button>
-    </div>
-
-    <section class="catalogo" id="catalogo"></section>
-
-  </main>
-
-  <div class="modal" id="modal">
-    <div class="modal-conteudo">
-
-      <button class="fechar" id="fecharModal">×</button>
-
-      <div class="modal-icon" id="modalIcone"></div>
-
-      <h2 id="modalTitulo"></h2>
-
-      <div class="modal-tags">
-        <span id="modalCategoria"></span>
+    <main class="container">
+      <div
+        class="filtros"
+        role="group"
+        aria-label="Filtrar serviços por categoria"
+      >
+        <button
+          type="button"
+          class="filtro ativo"
+          data-categoria="todos"
+          aria-pressed="true"
+        >
+          ✦ Todos
+        </button>
+        <button
+          type="button"
+          class="filtro"
+          data-categoria="escrita"
+          aria-pressed="false"
+        >
+          ✍️ Escrita e Conteúdo
+        </button>
+        <button
+          type="button"
+          class="filtro"
+          data-categoria="leitura"
+          aria-pressed="false"
+        >
+          📖 Leitura e Avaliação
+        </button>
+        <button
+          type="button"
+          class="filtro"
+          data-categoria="marketing"
+          aria-pressed="false"
+        >
+          📣 Divulgação & Marketing
+        </button>
+        <button
+          type="button"
+          class="filtro"
+          data-categoria="design"
+          aria-pressed="false"
+        >
+          🎨 Design & Identidade
+        </button>
       </div>
 
-      <div class="modal-precos">
-        <strong id="modalPontos"></strong>
-        <strong id="modalValor"></strong>
+      <section
+        class="catalogo"
+        id="catalogo"
+        aria-label="Catálogo de serviços"
+        aria-live="polite"
+      ></section>
+    </main>
+
+    <div
+      class="modal"
+      id="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitulo"
+      aria-hidden="true"
+    >
+      <div class="modal-conteudo">
+        <button
+          type="button"
+          class="fechar"
+          id="fecharModal"
+          aria-label="Fechar detalhes do serviço"
+        >
+          ×
+        </button>
+
+        <div class="modal-icon" id="modalIcone" aria-hidden="true"></div>
+
+        <h2 id="modalTitulo"></h2>
+
+        <div class="modal-tags">
+          <span id="modalCategoria"></span>
+        </div>
+
+        <div class="modal-precos">
+          <strong id="modalPontos"></strong>
+          <strong id="modalValor"></strong>
+        </div>
+
+        <p class="modal-descricao" id="modalDescricao"></p>
+
+        <h3>✦ O que está incluso</h3>
+
+        <ul id="modalInclusos"></ul>
+
+        <div class="extra" id="modalExtra"></div>
+
+        <a
+          href="https://chat.whatsapp.com/LvYSa0171jXEPFCFXAaX1w"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="botao-whatsapp"
+          id="botaoWhatsapp"
+        >
+          Solicitar no grupo ✦
+        </a>
+
+        <button type="button" class="botao-fechar" id="botaoFechar">
+          Fechar
+        </button>
+      </div>
+    </div>
+
+    <footer class="rodape">
+      <div>
+        <strong>Serviços de qualidade</strong>
+        <p>Feitos com carinho e criatividade</p>
       </div>
 
-      <p class="modal-descricao" id="modalDescricao"></p>
+      <div>
+        <strong>Atendimento personalizado</strong>
+        <p>Seu projeto, do seu jeito</p>
+      </div>
 
-      <h3>✦ O que está incluso</h3>
+      <div>
+        <strong>Catálogo Lunar</strong>
+        <p>Clique no serviço e veja os detalhes</p>
+      </div>
+    </footer>
 
-      <ul id="modalInclusos"></ul>
-
-      <div class="extra" id="modalExtra"></div>
-
-      <a href="#" target="_blank" class="botao-whatsapp" id="botaoWhatsapp">
-        Solicitar no grupo ✦
-      </a>
-
-      <button class="botao-fechar" id="botaoFechar">
-        Fechar
-      </button>
-
-    </div>
-  </div>
-
-  <footer class="rodape">
-    <div>
-      <strong>Serviços de qualidade</strong>
-      <p>Feitos com carinho e criatividade</p>
-    </div>
-
-    <div>
-      <strong>Atendimento personalizado</strong>
-      <p>Seu projeto, do seu jeito</p>
-    </div>
-
-    <div>
-      <strong>Catálogo Lunar</strong>
-      <p>Clique no serviço e veja os detalhes</p>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
