@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 import {
+  addDoc,
   collection,
   doc,
   getFirestore,
@@ -32,6 +33,7 @@ const estado = {
   categoria: "todos",
   busca: "",
   alterado: false,
+  novo: false,
   usuario: null,
 };
 
@@ -49,6 +51,8 @@ const elementos = {
   mensagem: $("#mensagemAdmin"),
   salvar: $("#salvarServico"),
   estadoEdicao: $("#estadoEdicao"),
+  novo: $("#novoServico"),
+  cancelarNovo: $("#cancelarNovo"),
   toast: $("#toast"),
 };
 
@@ -147,6 +151,8 @@ function renderizarCards() {
 }
 
 function preencherFormulario(servico) {
+  estado.novo = false;
+  $("#editorModo").textContent = "✦ Editando serviço";
   $("#editorIcone").textContent = servico.icone;
   $("#editorTitulo").textContent = nomeCompleto(servico);
   $("#editorCategoria").textContent = servico.categoriaNome;
@@ -164,7 +170,47 @@ function preencherFormulario(servico) {
   $("#adminExtra").value = servico.extra;
   $("#adminEsgotado").checked = Boolean(servico.esgotado);
   elementos.mensagem.textContent = "";
+  elementos.salvar.textContent = "Salvar alterações";
+  elementos.cancelarNovo.hidden = true;
   definirAlterado(false);
+}
+
+function fecharEditor() {
+  estado.selecionadoId = null;
+  estado.novo = false;
+  elementos.editorConteudo.hidden = true;
+  elementos.editorVazio.hidden = false;
+  elementos.cancelarNovo.hidden = true;
+  elementos.form.reset();
+  definirAlterado(false);
+  renderizarCards();
+}
+
+function abrirNovoServico() {
+  if (estado.alterado && !window.confirm("Existem alterações não salvas. Deseja descartá-las e criar um novo serviço?")) return;
+  estado.selecionadoId = null;
+  estado.novo = true;
+  elementos.editorVazio.hidden = true;
+  elementos.editorConteudo.hidden = false;
+  elementos.form.reset();
+  $("#editorModo").textContent = "✦ Novo serviço";
+  $("#editorIcone").textContent = "✦";
+  $("#editorTitulo").textContent = "Adicionar ao catálogo";
+  $("#editorCategoria").textContent = "Preencha os dados do novo card";
+  $("#adminIcone").value = "✦";
+  $("#adminCategoria").value = "escrita";
+  $("#adminCategoriaNome").value = "Escrita e Conteúdo";
+  $("#adminPontos").value = "A combinar";
+  $("#adminValor").value = "A combinar";
+  elementos.mensagem.textContent = "";
+  elementos.salvar.textContent = "Criar serviço";
+  elementos.cancelarNovo.hidden = false;
+  definirAlterado(false);
+  renderizarCards();
+  $("#adminTituloCampo").focus();
+  if (window.matchMedia("(max-width: 1100px)").matches) {
+    elementos.editor.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 function selecionarServico(id) {
@@ -184,9 +230,10 @@ function selecionarServico(id) {
 
 async function salvarServico(evento) {
   evento.preventDefault();
-  if (!estado.usuario || estado.usuario.email !== ADMIN_EMAIL || !estado.selecionadoId) return;
+  if (!estado.usuario || estado.usuario.email !== ADMIN_EMAIL || (!estado.selecionadoId && !estado.novo)) return;
+  const criando = estado.novo;
   elementos.salvar.disabled = true;
-  elementos.salvar.textContent = "Salvando…";
+  elementos.salvar.textContent = criando ? "Criando…" : "Salvando…";
   elementos.mensagem.textContent = "";
 
   try {
@@ -197,7 +244,7 @@ async function salvarServico(evento) {
       return { id: criarIdOpcao(nome, indice), nome, pontos, valor };
     });
 
-    await updateDoc(doc(db, "servicos", estado.selecionadoId), {
+    const dados = {
       titulo: $("#adminTituloCampo").value.trim(),
       subtitulo: $("#adminSubtitulo").value.trim(),
       icone: $("#adminIcone").value.trim(),
@@ -212,11 +259,32 @@ async function salvarServico(evento) {
       extra: $("#adminExtra").value.trim(),
       esgotado: $("#adminEsgotado").checked,
       atualizadoEm: serverTimestamp(),
-    });
+    };
+
+    if (criando) {
+      const maiorOrdem = estado.servicos.reduce((maior, servico) => Math.max(maior, Number(servico.ordem) || 0), 0);
+      const novaOrdem = maiorOrdem + 10;
+      const referencia = await addDoc(collection(db, "servicos"), {
+        ...dados,
+        ordem: novaOrdem,
+        criadoEm: serverTimestamp(),
+      });
+      estado.selecionadoId = referencia.id;
+      estado.novo = false;
+      const servicoCriado = { id: referencia.id, ...dados, ordem: novaOrdem };
+      if (!estado.servicos.some((servico) => servico.id === referencia.id)) estado.servicos.push(servicoCriado);
+      preencherFormulario(servicoCriado);
+      atualizarResumo();
+      renderizarCards();
+    } else {
+      await updateDoc(doc(db, "servicos", estado.selecionadoId), dados);
+    }
 
     definirAlterado(false);
-    elementos.mensagem.textContent = "Alterações salvas com sucesso.";
-    mostrarToast("Serviço atualizado no catálogo.");
+    elementos.cancelarNovo.hidden = true;
+    elementos.salvar.textContent = "Salvar alterações";
+    elementos.mensagem.textContent = criando ? "Serviço criado com sucesso." : "Alterações salvas com sucesso.";
+    mostrarToast(criando ? "Novo serviço adicionado ao catálogo." : "Serviço atualizado no catálogo.");
   } catch (erro) {
     console.error(erro);
     elementos.mensagem.textContent = erro.message === "invalid-options"
@@ -224,7 +292,7 @@ async function salvarServico(evento) {
       : "Não foi possível salvar. Verifique sua conexão e tente novamente.";
   } finally {
     elementos.salvar.disabled = false;
-    elementos.salvar.textContent = "Salvar alterações";
+    elementos.salvar.textContent = estado.novo ? "Criar serviço" : "Salvar alterações";
   }
 }
 
@@ -244,6 +312,20 @@ document.querySelectorAll(".admin-filtro").forEach((botao) => {
 elementos.form.addEventListener("input", () => definirAlterado(true));
 elementos.form.addEventListener("change", () => definirAlterado(true));
 elementos.form.addEventListener("submit", salvarServico);
+$("#adminCategoria").addEventListener("change", () => {
+  const nomes = {
+    escrita: "Escrita e Conteúdo",
+    leitura: "Leitura e Avaliação",
+    marketing: "Divulgação & Marketing",
+    design: "Design & Identidade",
+  };
+  $("#adminCategoriaNome").value = nomes[$("#adminCategoria").value] || "";
+});
+elementos.novo.addEventListener("click", abrirNovoServico);
+elementos.cancelarNovo.addEventListener("click", () => {
+  if (estado.alterado && !window.confirm("Descartar os dados deste novo serviço?")) return;
+  fecharEditor();
+});
 
 $("#sairAdmin").addEventListener("click", async () => {
   await signOut(auth);

@@ -8,7 +8,7 @@
     <title>Administração | Loja Lunar</title>
     <link rel="icon" type="image/png" href="assets/favicon.png?v=1" />
     <link rel="stylesheet" href="style.css?v=3" />
-    <link rel="stylesheet" href="admin.css?v=1" />
+    <link rel="stylesheet" href="admin.css?v=2" />
   </head>
   <body class="pagina-admin">
     <div class="admin-carregando" id="adminCarregando">
@@ -57,7 +57,10 @@
           <section class="admin-lista-area" aria-labelledby="listaTitulo">
             <div class="admin-secao-titulo">
               <div><span class="mini-selo">✦ Catálogo</span><h2 id="listaTitulo">Escolha um serviço</h2></div>
-              <span id="quantidadeVisivel">0 serviços</span>
+              <div class="admin-lista-acoes">
+                <span id="quantidadeVisivel">0 serviços</span>
+                <button type="button" class="botao-novo-servico" id="novoServico">+ Novo serviço</button>
+              </div>
             </div>
             <div class="admin-cards" id="adminCards" aria-live="polite"></div>
             <p class="admin-sem-resultados" id="adminSemResultados" hidden>Nenhum serviço encontrado.</p>
@@ -73,33 +76,52 @@
             <div id="adminEditorConteudo" hidden>
               <header class="admin-editor-cabecalho">
                 <div class="admin-editor-icone" id="editorIcone">🌙</div>
-                <div><span class="mini-selo">✦ Editando serviço</span><h2 id="editorTitulo"></h2><p id="editorCategoria"></p></div>
+                <div><span class="mini-selo" id="editorModo">✦ Editando serviço</span><h2 id="editorTitulo"></h2><p id="editorCategoria"></p></div>
               </header>
 
               <form id="formAdmin" class="form-admin">
-                <div class="campo-duplo">
-                  <label>Título<input id="adminTituloCampo" required /></label>
-                  <label>Subtítulo<input id="adminSubtitulo" /></label>
-                </div>
-                <div class="campo-triplo">
-                  <label>Ícone<input id="adminIcone" maxlength="8" required /></label>
-                  <label>Categoria<select id="adminCategoria"><option value="escrita">Escrita</option><option value="leitura">Leitura</option><option value="marketing">Marketing</option><option value="design">Design</option></select></label>
-                  <label>Nome da categoria<input id="adminCategoriaNome" required /></label>
-                </div>
-                <div class="campo-duplo">
-                  <label>Valor em pontos<input id="adminPontos" required /></label>
-                  <label>Valor em dinheiro<input id="adminValor" required /></label>
-                </div>
-                <label>Modalidades <small>(nome | pontos | valor, uma por linha; deixe vazio se não houver)</small><textarea id="adminOpcoes" rows="4" placeholder="Composição | 200 P | R$8,00"></textarea></label>
-                <label>Descrição curta<textarea id="adminDescricao" rows="3" required></textarea></label>
-                <label>Descrição detalhada<textarea id="adminDetalhes" rows="5" required></textarea></label>
-                <label>Itens inclusos <small>(um por linha)</small><textarea id="adminInclusos" rows="7" required></textarea></label>
-                <label>Observação extra<textarea id="adminExtra" rows="3" required></textarea></label>
-                <label class="controle-esgotado"><input type="checkbox" id="adminEsgotado" /><span>Marcar este serviço como esgotado</span></label>
+                <section class="grupo-formulario" aria-labelledby="grupoIdentificacao">
+                  <div class="grupo-formulario-titulo"><span>01</span><div><h3 id="grupoIdentificacao">Identificação</h3><p>Como o serviço aparece no catálogo.</p></div></div>
+                  <div class="campo-duplo">
+                    <label>Título<input id="adminTituloCampo" required /></label>
+                    <label>Subtítulo <small>(opcional)</small><input id="adminSubtitulo" /></label>
+                  </div>
+                  <div class="campo-triplo">
+                    <label>Ícone<input id="adminIcone" maxlength="8" required /></label>
+                    <label>Categoria<select id="adminCategoria"><option value="escrita">Escrita</option><option value="leitura">Leitura</option><option value="marketing">Marketing</option><option value="design">Design</option></select></label>
+                    <label>Nome da categoria<input id="adminCategoriaNome" required /></label>
+                  </div>
+                </section>
+
+                <section class="grupo-formulario" aria-labelledby="grupoValores">
+                  <div class="grupo-formulario-titulo"><span>02</span><div><h3 id="grupoValores">Valores e modalidades</h3><p>Preço principal e variações do serviço.</p></div></div>
+                  <div class="campo-duplo">
+                    <label>Valor em pontos<input id="adminPontos" required /></label>
+                    <label>Valor em dinheiro<input id="adminValor" required /></label>
+                  </div>
+                  <label>Modalidades <small>(uma por linha no formato nome | pontos | valor)</small><textarea id="adminOpcoes" rows="4" placeholder="Composição | 200 P | R$8,00"></textarea></label>
+                </section>
+
+                <section class="grupo-formulario" aria-labelledby="grupoConteudo">
+                  <div class="grupo-formulario-titulo"><span>03</span><div><h3 id="grupoConteudo">Conteúdo do card</h3><p>Textos exibidos ao cliente nos detalhes.</p></div></div>
+                  <label>Descrição curta<textarea id="adminDescricao" rows="3" required></textarea></label>
+                  <label>Descrição detalhada<textarea id="adminDetalhes" rows="5" required></textarea></label>
+                  <label>Itens inclusos <small>(um por linha)</small><textarea id="adminInclusos" rows="6" required></textarea></label>
+                  <label>Observação extra<textarea id="adminExtra" rows="3" required></textarea></label>
+                </section>
+
+                <section class="grupo-formulario grupo-disponibilidade" aria-labelledby="grupoDisponibilidade">
+                  <div class="grupo-formulario-titulo"><span>04</span><div><h3 id="grupoDisponibilidade">Disponibilidade</h3><p>Controle se o item pode ser adicionado ao carrinho.</p></div></div>
+                  <label class="controle-esgotado"><input type="checkbox" id="adminEsgotado" /><span><strong>Marcar como esgotado</strong><small>O card continua visível, mas não pode ser comprado.</small></span></label>
+                </section>
+
                 <p class="mensagem-form" id="mensagemAdmin" role="status"></p>
                 <div class="admin-salvar-area">
                   <span id="estadoEdicao">Nenhuma alteração pendente</span>
-                  <button type="submit" class="botao-principal" id="salvarServico">Salvar alterações</button>
+                  <div class="admin-salvar-botoes">
+                    <button type="button" class="botao-secundario" id="cancelarNovo" hidden>Cancelar</button>
+                    <button type="submit" class="botao-principal" id="salvarServico">Salvar alterações</button>
+                  </div>
                 </div>
               </form>
             </div>
@@ -109,6 +131,6 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="admin.js?v=1"></script>
+    <script type="module" src="admin.js?v=2"></script>
   </body>
 </html>
