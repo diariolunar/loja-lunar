@@ -55,6 +55,8 @@ const elementos = {
   produtoDescricao: $("#produtoDescricao"),
   produtoInclusos: $("#produtoInclusos"),
   produtoExtra: $("#produtoExtra"),
+  grupoProdutoOpcao: $("#grupoProdutoOpcao"),
+  produtoOpcao: $("#produtoOpcao"),
   produtoQuantidade: $("#produtoQuantidade"),
   produtoSubtotal: $("#produtoSubtotal"),
   adicionarArea: $("#adicionarArea"),
@@ -127,6 +129,29 @@ function mostrarToast(mensagem) {
 
 function nomeCompleto(servico) {
   return servico.subtitulo ? `${servico.titulo} — ${servico.subtitulo}` : servico.titulo;
+}
+
+function opcoesDoServico(servico) {
+  return Array.isArray(servico?.opcoes) ? servico.opcoes : [];
+}
+
+function opcaoDoServico(servico, opcaoId) {
+  return opcoesDoServico(servico).find((opcao) => opcao.id === opcaoId) || null;
+}
+
+function servicoComOpcao(servico, opcaoId) {
+  const opcao = opcaoDoServico(servico, opcaoId);
+  return opcao ? { ...servico, pontos: opcao.pontos, valor: opcao.valor } : servico;
+}
+
+function nomeItem(servico, opcaoId) {
+  const opcao = opcaoDoServico(servico, opcaoId);
+  return opcao ? `${nomeCompleto(servico)} — ${opcao.nome}` : nomeCompleto(servico);
+}
+
+function criarIdOpcao(nome, indice) {
+  const id = nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return id || `opcao-${indice + 1}`;
 }
 
 function renderizarCatalogo() {
@@ -204,11 +229,28 @@ function abrirProduto(servico) {
     elementos.produtoInclusos.appendChild(li);
   });
   elementos.produtoExtra.textContent = `✦ ${servico.extra}`;
+  elementos.produtoOpcao.replaceChildren();
+  const opcoes = opcoesDoServico(servico);
+  elementos.grupoProdutoOpcao.hidden = opcoes.length === 0;
+  opcoes.forEach((opcao) => {
+    const option = document.createElement("option");
+    option.value = opcao.id;
+    option.textContent = `${opcao.nome} — ${opcao.pontos} / ${opcao.valor}`;
+    elementos.produtoOpcao.appendChild(option);
+  });
   elementos.produtoQuantidade.value = "1";
   elementos.adicionarArea.hidden = Boolean(servico.esgotado);
   elementos.avisoEsgotado.hidden = !servico.esgotado;
-  atualizarSubtotalProduto();
+  atualizarPrecoProduto();
   abrirModal(elementos.modalProduto);
+}
+
+function atualizarPrecoProduto() {
+  if (!estado.servicoAberto) return;
+  const servico = servicoComOpcao(estado.servicoAberto, elementos.produtoOpcao.value);
+  elementos.produtoPontos.textContent = `✦ ${servico.pontos}`;
+  elementos.produtoValor.textContent = servico.valor;
+  atualizarSubtotalProduto();
 }
 
 function extrairNumero(texto, tipo) {
@@ -249,30 +291,34 @@ function quantidadeProduto() {
 function atualizarSubtotalProduto() {
   if (!estado.servicoAberto) return;
   const quantidade = quantidadeProduto();
-  elementos.produtoSubtotal.textContent = `Subtotal: ${textoValores(calcularValores(estado.servicoAberto, quantidade), estado.servicoAberto, quantidade)}`;
+  const servico = servicoComOpcao(estado.servicoAberto, elementos.produtoOpcao.value);
+  elementos.produtoSubtotal.textContent = `Subtotal: ${textoValores(calcularValores(servico, quantidade), servico, quantidade)}`;
 }
 
 function adicionarAoCarrinho() {
   const servico = estado.servicoAberto;
   if (!servico || servico.esgotado) return;
   const quantidade = quantidadeProduto();
-  const existente = estado.carrinho.find((item) => item.id === servico.id);
+  const opcaoId = opcoesDoServico(servico).length ? elementos.produtoOpcao.value : null;
+  const existente = estado.carrinho.find((item) => item.id === servico.id && (item.opcaoId || null) === opcaoId);
   if (existente) existente.quantidade = Math.min(99, existente.quantidade + quantidade);
-  else estado.carrinho.push({ id: servico.id, quantidade });
+  else estado.carrinho.push({ id: servico.id, opcaoId, quantidade });
   persistirCarrinho();
   fecharModal(elementos.modalProduto);
-  mostrarToast(`${nomeCompleto(servico)} foi adicionado ao carrinho.`);
+  mostrarToast(`${nomeItem(servico, opcaoId)} foi adicionado ao carrinho.`);
 }
 
 function servicoDoCarrinho(id) {
   return estado.servicos.find((servico) => servico.id === id);
 }
 
-function alterarQuantidadeCarrinho(id, diferenca) {
-  const item = estado.carrinho.find((carrinhoItem) => carrinhoItem.id === id);
+function alterarQuantidadeCarrinho(id, opcaoId, diferenca) {
+  const item = estado.carrinho.find((carrinhoItem) => carrinhoItem.id === id && (carrinhoItem.opcaoId || null) === (opcaoId || null));
   if (!item) return;
   item.quantidade = Math.min(99, item.quantidade + diferenca);
-  if (item.quantidade <= 0) estado.carrinho = estado.carrinho.filter((carrinhoItem) => carrinhoItem.id !== id);
+  if (item.quantidade <= 0) {
+    estado.carrinho = estado.carrinho.filter((carrinhoItem) => !(carrinhoItem.id === id && (carrinhoItem.opcaoId || null) === (opcaoId || null)));
+  }
   persistirCarrinho();
   renderizarCarrinho();
 }
@@ -280,7 +326,8 @@ function alterarQuantidadeCarrinho(id, diferenca) {
 function renderizarCarrinho() {
   estado.carrinho = estado.carrinho.filter((item) => {
     const servico = servicoDoCarrinho(item.id);
-    return servico && !servico.esgotado;
+    const exigeOpcao = opcoesDoServico(servico).length > 0;
+    return servico && !servico.esgotado && (!exigeOpcao || opcaoDoServico(servico, item.opcaoId));
   });
   persistirCarrinho();
   elementos.carrinhoItens.replaceChildren();
@@ -295,7 +342,8 @@ function renderizarCarrinho() {
 
   estado.carrinho.forEach((item) => {
     const servico = servicoDoCarrinho(item.id);
-    const valores = calcularValores(servico, item.quantidade);
+    const servicoPrecificado = servicoComOpcao(servico, item.opcaoId);
+    const valores = calcularValores(servicoPrecificado, item.quantidade);
     if (valores.dinheiro === null) possuiDinheiroVariavel = true;
     else totalDinheiro += valores.dinheiro;
     if (valores.pontos === null) possuiPontosVariaveis = true;
@@ -307,12 +355,12 @@ function renderizarCarrinho() {
     const topo = document.createElement("div");
     topo.className = "item-carrinho-topo";
     const nome = document.createElement("strong");
-    nome.textContent = `${servico.icone} ${nomeCompleto(servico)}`;
+    nome.textContent = `${servico.icone} ${nomeItem(servico, item.opcaoId)}`;
     const remover = document.createElement("button");
     remover.type = "button";
     remover.className = "remover-item";
     remover.textContent = "Remover";
-    remover.addEventListener("click", () => alterarQuantidadeCarrinho(item.id, -item.quantidade));
+    remover.addEventListener("click", () => alterarQuantidadeCarrinho(item.id, item.opcaoId, -item.quantidade));
     topo.append(nome, remover);
 
     const rodape = document.createElement("div");
@@ -322,19 +370,19 @@ function renderizarCarrinho() {
     const diminuir = document.createElement("button");
     diminuir.type = "button";
     diminuir.textContent = "−";
-    diminuir.setAttribute("aria-label", `Diminuir ${nomeCompleto(servico)}`);
-    diminuir.addEventListener("click", () => alterarQuantidadeCarrinho(item.id, -1));
+    diminuir.setAttribute("aria-label", `Diminuir ${nomeItem(servico, item.opcaoId)}`);
+    diminuir.addEventListener("click", () => alterarQuantidadeCarrinho(item.id, item.opcaoId, -1));
     const numero = document.createElement("span");
     numero.textContent = String(item.quantidade);
     const aumentar = document.createElement("button");
     aumentar.type = "button";
     aumentar.textContent = "+";
-    aumentar.setAttribute("aria-label", `Aumentar ${nomeCompleto(servico)}`);
-    aumentar.addEventListener("click", () => alterarQuantidadeCarrinho(item.id, 1));
+    aumentar.setAttribute("aria-label", `Aumentar ${nomeItem(servico, item.opcaoId)}`);
+    aumentar.addEventListener("click", () => alterarQuantidadeCarrinho(item.id, item.opcaoId, 1));
     quantidade.append(diminuir, numero, aumentar);
     const subtotal = document.createElement("span");
     subtotal.className = "item-subtotal";
-    subtotal.textContent = textoValores(valores, servico, item.quantidade);
+    subtotal.textContent = textoValores(valores, servicoPrecificado, item.quantidade);
     rodape.append(quantidade, subtotal);
     artigo.append(topo, rodape);
     elementos.carrinhoItens.appendChild(artigo);
@@ -375,9 +423,10 @@ function montarMensagemPedido() {
 
   estado.carrinho.forEach((item, indice) => {
     const servico = servicoDoCarrinho(item.id);
-    const valores = calcularValores(servico, item.quantidade);
-    linhas.push(`${indice + 1}. ${item.quantidade}x ${nomeCompleto(servico)}`);
-    linhas.push(`   ${textoValores(valores, servico, item.quantidade)}`);
+    const servicoPrecificado = servicoComOpcao(servico, item.opcaoId);
+    const valores = calcularValores(servicoPrecificado, item.quantidade);
+    linhas.push(`${indice + 1}. ${item.quantidade}x ${nomeItem(servico, item.opcaoId)}`);
+    linhas.push(`   ${textoValores(valores, servicoPrecificado, item.quantidade)}`);
     if (valores.dinheiro === null) variavelDinheiro = true;
     else totalDinheiro += valores.dinheiro;
     if (valores.pontos === null) variavelPontos = true;
@@ -428,6 +477,7 @@ function preencherFormularioAdmin() {
   $("#adminCategoriaNome").value = servico.categoriaNome;
   $("#adminPontos").value = servico.pontos;
   $("#adminValor").value = servico.valor;
+  $("#adminOpcoes").value = opcoesDoServico(servico).map((opcao) => `${opcao.nome} | ${opcao.pontos} | ${opcao.valor}`).join("\n");
   $("#adminDescricao").value = servico.descricao;
   $("#adminDetalhes").value = servico.detalhes;
   $("#adminInclusos").value = servico.inclusos.join("\n");
@@ -445,6 +495,11 @@ async function salvarServico(evento) {
   elementos.salvarServico.textContent = "Salvando…";
   elementos.mensagemAdmin.textContent = "";
   try {
+    const opcoes = $("#adminOpcoes").value.split("\n").map((linha) => linha.trim()).filter(Boolean).map((linha, indice) => {
+      const [nome, pontos, valor] = linha.split("|").map((parte) => parte.trim());
+      if (!nome || !pontos || !valor) throw new Error("invalid-options");
+      return { id: criarIdOpcao(nome, indice), nome, pontos, valor };
+    });
     await updateDoc(doc(db, "servicos", id), {
       titulo: $("#adminTituloCampo").value.trim(),
       subtitulo: $("#adminSubtitulo").value.trim(),
@@ -453,6 +508,7 @@ async function salvarServico(evento) {
       categoriaNome: $("#adminCategoriaNome").value.trim(),
       pontos: $("#adminPontos").value.trim(),
       valor: $("#adminValor").value.trim(),
+      opcoes,
       descricao: $("#adminDescricao").value.trim(),
       detalhes: $("#adminDetalhes").value.trim(),
       inclusos,
@@ -464,7 +520,9 @@ async function salvarServico(evento) {
     mostrarToast("Serviço atualizado.");
   } catch (erro) {
     console.error(erro);
-    elementos.mensagemAdmin.textContent = "Não foi possível salvar. Verifique sua conexão e tente novamente.";
+    elementos.mensagemAdmin.textContent = erro.message === "invalid-options"
+      ? "Use o formato: Nome | Pontos | Valor, uma modalidade por linha."
+      : "Não foi possível salvar. Verifique sua conexão e tente novamente.";
   } finally {
     elementos.salvarServico.disabled = false;
     elementos.salvarServico.textContent = "Salvar alterações";
@@ -536,6 +594,7 @@ $("#aumentarQuantidade").addEventListener("click", () => {
   atualizarSubtotalProduto();
 });
 elementos.produtoQuantidade.addEventListener("input", atualizarSubtotalProduto);
+elementos.produtoOpcao.addEventListener("change", atualizarPrecoProduto);
 $("#adicionarCarrinho").addEventListener("click", adicionarAoCarrinho);
 $("#abrirCarrinho").addEventListener("click", abrirCarrinho);
 $("#fecharCarrinho").addEventListener("click", fecharCarrinho);

@@ -6,7 +6,9 @@
     <meta name="description" content="Catálogo de serviços da Loja Lunar." />
     <meta name="theme-color" content="#160024" />
     <title>Loja Lunar | Catálogo de Serviços</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="assets/favicon.png?v=1" />
+    <link rel="apple-touch-icon" href="assets/favicon.png?v=1" />
+    <link rel="stylesheet" href="style.css?v=3" />
   </head>
   <body>
     <header class="topo">
@@ -55,6 +57,10 @@
         <div class="extra" id="produtoExtra"></div>
 
         <div class="adicionar-area" id="adicionarArea">
+          <label id="grupoProdutoOpcao" for="produtoOpcao" hidden>
+            Escolha a modalidade
+            <select id="produtoOpcao"></select>
+          </label>
           <label for="produtoQuantidade">Quantidade</label>
           <div class="seletor-quantidade">
             <button type="button" id="diminuirQuantidade" aria-label="Diminuir quantidade">−</button>
@@ -114,6 +120,7 @@
           <div class="campo-duplo"><label>Título<input id="adminTituloCampo" required /></label><label>Subtítulo<input id="adminSubtitulo" /></label></div>
           <div class="campo-triplo"><label>Ícone<input id="adminIcone" maxlength="8" required /></label><label>Categoria<select id="adminCategoria"><option value="escrita">Escrita</option><option value="leitura">Leitura</option><option value="marketing">Marketing</option><option value="design">Design</option></select></label><label>Nome da categoria<input id="adminCategoriaNome" required /></label></div>
           <div class="campo-duplo"><label>Valor em pontos<input id="adminPontos" required /></label><label>Valor em dinheiro<input id="adminValor" required /></label></div>
+          <label>Modalidades <small>(nome | pontos | valor, uma por linha; deixe vazio se não houver)</small><textarea id="adminOpcoes" rows="4" placeholder="Composição | 200 P | R$8,00"></textarea></label>
           <label>Descrição curta<textarea id="adminDescricao" rows="3" required></textarea></label>
           <label>Descrição detalhada<textarea id="adminDetalhes" rows="5" required></textarea></label>
           <label>Itens inclusos <small>(um por linha)</small><textarea id="adminInclusos" rows="7" required></textarea></label>
@@ -133,6 +140,6 @@
       <div><strong>Catálogo Lunar</strong><p>Monte seu pedido e envie pelo WhatsApp</p></div>
     </footer>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="app.js?v=3"></script>
   </body>
 </html>

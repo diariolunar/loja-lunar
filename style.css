@@ -437,6 +437,23 @@ body.modal-aberto {
   margin-bottom: 9px;
 }
 
+.adicionar-area select {
+  background: #170025;
+  border: 1px solid rgba(245, 200, 66, 0.35);
+  border-radius: 10px;
+  color: #fff;
+  display: block;
+  font: inherit;
+  margin: 8px 0 16px;
+  padding: 12px;
+  width: 100%;
+}
+
+.adicionar-area select:focus {
+  border-color: #f5c842;
+  outline: 2px solid rgba(245, 200, 66, 0.2);
+}
+
 .seletor-quantidade {
   align-items: center;
   display: inline-grid;

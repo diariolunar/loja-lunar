@@ -1,6 +1,6 @@
 # Loja Lunar
 
-Catálogo de serviços da Loja Lunar com carrinho, pedido pelo WhatsApp e painel administrativo protegido pelo Firebase Authentication.
+Catálogo de serviços da Loja Lunar com modalidades de serviço, carrinho, pedido pelo WhatsApp e painel administrativo protegido pelo Firebase Authentication.
 
 ## Estrutura
 
