@@ -544,8 +544,18 @@ async function entrarAdmin(evento) {
     fecharModal(elementos.modalLogin);
     preencherListaAdmin();
     abrirModal(elementos.modalAdmin);
-  } catch {
-    elementos.mensagemLogin.textContent = "E-mail ou senha inválidos.";
+  } catch (erro) {
+    console.error("Falha no login administrativo:", erro.code);
+    const mensagens = {
+      "auth/invalid-credential": "E-mail ou senha inválidos.",
+      "auth/invalid-email": "Digite um endereço de e-mail válido.",
+      "auth/too-many-requests": "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
+      "auth/network-request-failed": "Não foi possível conectar ao Firebase. Verifique sua internet.",
+    };
+    elementos.mensagemLogin.textContent = mensagens[erro.code]
+      || (erro.code?.includes("referer")
+        ? "Este endereço do site ainda não está autorizado para o acesso administrativo."
+        : "Não foi possível entrar agora. Atualize a página e tente novamente.");
   } finally {
     elementos.entrarAdmin.disabled = false;
     elementos.entrarAdmin.textContent = "Entrar";
