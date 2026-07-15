@@ -3,167 +3,136 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <meta name="description" content="Catálogo de serviços da Loja Lunar." />
+    <meta name="theme-color" content="#160024" />
     <title>Loja Lunar | Catálogo de Serviços</title>
-    <meta
-      name="description"
-      content="Catálogo de serviços da Loja Lunar para escrita, leitura, divulgação, marketing, design e identidade."
-    />
-
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <header class="topo">
-      <div class="logo-area">
-        <img
-          src="assets/logo-lunar.png"
-          alt="Loja Lunar"
-          class="logo"
-          width="2413"
-          height="800"
-          decoding="async"
-        />
-      </div>
+      <button type="button" class="logo-gatilho" id="abrirAdmin" aria-label="Loja Lunar">
+        <img src="assets/logo-lunar.png" alt="Loja Lunar" class="logo" width="2413" height="800" decoding="async" />
+      </button>
+
+      <button type="button" class="botao-carrinho" id="abrirCarrinho" aria-label="Abrir carrinho">
+        <span aria-hidden="true">🛒</span>
+        <span>Carrinho</span>
+        <span class="contador-carrinho" id="contadorCarrinho">0</span>
+      </button>
     </header>
 
     <section class="hero">
       <div class="hero-texto">
+        <p class="hero-selo">✦ Loja Lunar</p>
         <h1>Catálogo de <span>Serviços</span></h1>
-        <p>
-          Escolha o serviço ideal para dar vida ao seu projeto. Clique em um
-          card para ver mais detalhes.
-        </p>
+        <p>Escolha o serviço ideal, defina a quantidade e monte seu pedido.</p>
       </div>
     </section>
 
     <main class="container">
-      <div
-        class="filtros"
-        role="group"
-        aria-label="Filtrar serviços por categoria"
-      >
-        <button
-          type="button"
-          class="filtro ativo"
-          data-categoria="todos"
-          aria-pressed="true"
-        >
-          ✦ Todos
-        </button>
-        <button
-          type="button"
-          class="filtro"
-          data-categoria="escrita"
-          aria-pressed="false"
-        >
-          ✍️ Escrita e Conteúdo
-        </button>
-        <button
-          type="button"
-          class="filtro"
-          data-categoria="leitura"
-          aria-pressed="false"
-        >
-          📖 Leitura e Avaliação
-        </button>
-        <button
-          type="button"
-          class="filtro"
-          data-categoria="marketing"
-          aria-pressed="false"
-        >
-          📣 Divulgação & Marketing
-        </button>
-        <button
-          type="button"
-          class="filtro"
-          data-categoria="design"
-          aria-pressed="false"
-        >
-          🎨 Design & Identidade
-        </button>
+      <div class="filtros" role="group" aria-label="Filtrar serviços por categoria">
+        <button type="button" class="filtro ativo" data-categoria="todos" aria-pressed="true">✦ Todos</button>
+        <button type="button" class="filtro" data-categoria="escrita" aria-pressed="false">✍️ Escrita e Conteúdo</button>
+        <button type="button" class="filtro" data-categoria="leitura" aria-pressed="false">📖 Leitura e Avaliação</button>
+        <button type="button" class="filtro" data-categoria="marketing" aria-pressed="false">📣 Divulgação & Marketing</button>
+        <button type="button" class="filtro" data-categoria="design" aria-pressed="false">🎨 Design & Identidade</button>
       </div>
 
-      <section
-        class="catalogo"
-        id="catalogo"
-        aria-label="Catálogo de serviços"
-        aria-live="polite"
-      ></section>
+      <p class="estado-catalogo" id="estadoCatalogo">Carregando o catálogo…</p>
+      <section class="catalogo" id="catalogo" aria-label="Catálogo de serviços" aria-live="polite"></section>
     </main>
 
-    <div
-      class="modal"
-      id="modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modalTitulo"
-      aria-hidden="true"
-    >
+    <div class="modal" id="modalProduto" role="dialog" aria-modal="true" aria-labelledby="produtoTitulo" aria-hidden="true">
       <div class="modal-conteudo">
-        <button
-          type="button"
-          class="fechar"
-          id="fecharModal"
-          aria-label="Fechar detalhes do serviço"
-        >
-          ×
-        </button>
-
-        <div class="modal-icon" id="modalIcone" aria-hidden="true"></div>
-
-        <h2 id="modalTitulo"></h2>
-
-        <div class="modal-tags">
-          <span id="modalCategoria"></span>
-        </div>
-
-        <div class="modal-precos">
-          <strong id="modalPontos"></strong>
-          <strong id="modalValor"></strong>
-        </div>
-
-        <p class="modal-descricao" id="modalDescricao"></p>
-
+        <button type="button" class="fechar" data-fechar="modalProduto" aria-label="Fechar detalhes">×</button>
+        <div class="modal-icon" id="produtoIcone" aria-hidden="true"></div>
+        <h2 id="produtoTitulo"></h2>
+        <div class="modal-tags"><span id="produtoCategoria"></span></div>
+        <div class="modal-precos"><strong id="produtoPontos"></strong><strong id="produtoValor"></strong></div>
+        <p class="modal-descricao" id="produtoDescricao"></p>
         <h3>✦ O que está incluso</h3>
+        <ul id="produtoInclusos"></ul>
+        <div class="extra" id="produtoExtra"></div>
 
-        <ul id="modalInclusos"></ul>
-
-        <div class="extra" id="modalExtra"></div>
-
-        <a
-          href="https://chat.whatsapp.com/LvYSa0171jXEPFCFXAaX1w"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="botao-whatsapp"
-          id="botaoWhatsapp"
-        >
-          Solicitar no grupo ✦
-        </a>
-
-        <button type="button" class="botao-fechar" id="botaoFechar">
-          Fechar
-        </button>
+        <div class="adicionar-area" id="adicionarArea">
+          <label for="produtoQuantidade">Quantidade</label>
+          <div class="seletor-quantidade">
+            <button type="button" id="diminuirQuantidade" aria-label="Diminuir quantidade">−</button>
+            <input id="produtoQuantidade" type="number" min="1" max="99" value="1" inputmode="numeric" />
+            <button type="button" id="aumentarQuantidade" aria-label="Aumentar quantidade">+</button>
+          </div>
+          <p class="subtotal-preview" id="produtoSubtotal"></p>
+          <button type="button" class="botao-principal" id="adicionarCarrinho">Adicionar ao carrinho</button>
+        </div>
+        <p class="aviso-esgotado" id="avisoEsgotado" hidden>Este serviço está esgotado no momento.</p>
+        <button type="button" class="botao-fechar" data-fechar="modalProduto">Continuar vendo</button>
       </div>
     </div>
 
+    <aside class="carrinho" id="carrinho" role="dialog" aria-modal="true" aria-labelledby="carrinhoTitulo" aria-hidden="true" inert>
+      <div class="carrinho-cabecalho">
+        <div><span class="mini-selo">✦ Seu pedido</span><h2 id="carrinhoTitulo">Carrinho</h2></div>
+        <button type="button" class="fechar" id="fecharCarrinho" aria-label="Fechar carrinho">×</button>
+      </div>
+      <div class="carrinho-itens" id="carrinhoItens"></div>
+      <div class="carrinho-vazio" id="carrinhoVazio"><span>🌙</span><p>Seu carrinho está vazio.</p></div>
+      <div class="carrinho-resumo" id="carrinhoResumo" hidden>
+        <div><span>Total em pontos</span><strong id="totalPontos"></strong></div>
+        <div><span>Total em dinheiro</span><strong id="totalDinheiro"></strong></div>
+        <small id="avisoTotal"></small>
+        <button type="button" class="botao-principal" id="finalizarPedido">Enviar pedido no WhatsApp</button>
+        <button type="button" class="botao-secundario" id="limparCarrinho">Limpar carrinho</button>
+      </div>
+    </aside>
+    <div class="overlay" id="overlayCarrinho" hidden></div>
+
+    <div class="modal modal-central" id="modalLogin" role="dialog" aria-modal="true" aria-labelledby="loginTitulo" aria-hidden="true">
+      <form class="painel-login" id="formLogin">
+        <button type="button" class="fechar" data-fechar="modalLogin" aria-label="Fechar login">×</button>
+        <span class="mini-selo">✦ Área restrita</span>
+        <h2 id="loginTitulo">Acesso administrativo</h2>
+        <p>Entre para atualizar os serviços da Loja Lunar.</p>
+        <label for="loginEmail">E-mail</label>
+        <input type="email" id="loginEmail" autocomplete="username" required />
+        <label for="loginSenha">Senha</label>
+        <input type="password" id="loginSenha" autocomplete="current-password" required />
+        <p class="mensagem-form" id="mensagemLogin" role="alert"></p>
+        <button type="submit" class="botao-principal" id="entrarAdmin">Entrar</button>
+      </form>
+    </div>
+
+    <div class="modal modal-central" id="modalAdmin" role="dialog" aria-modal="true" aria-labelledby="adminTitulo" aria-hidden="true">
+      <section class="painel-admin">
+        <header class="admin-cabecalho">
+          <div><span class="mini-selo">✦ Administração</span><h2 id="adminTitulo">Painel da Loja Lunar</h2></div>
+          <div class="admin-acoes"><button type="button" class="botao-secundario" id="sairAdmin">Sair</button><button type="button" class="fechar" data-fechar="modalAdmin" aria-label="Fechar painel">×</button></div>
+        </header>
+
+        <label for="adminServico">Serviço para editar</label>
+        <select id="adminServico"></select>
+        <form id="formAdmin" class="form-admin">
+          <div class="campo-duplo"><label>Título<input id="adminTituloCampo" required /></label><label>Subtítulo<input id="adminSubtitulo" /></label></div>
+          <div class="campo-triplo"><label>Ícone<input id="adminIcone" maxlength="8" required /></label><label>Categoria<select id="adminCategoria"><option value="escrita">Escrita</option><option value="leitura">Leitura</option><option value="marketing">Marketing</option><option value="design">Design</option></select></label><label>Nome da categoria<input id="adminCategoriaNome" required /></label></div>
+          <div class="campo-duplo"><label>Valor em pontos<input id="adminPontos" required /></label><label>Valor em dinheiro<input id="adminValor" required /></label></div>
+          <label>Descrição curta<textarea id="adminDescricao" rows="3" required></textarea></label>
+          <label>Descrição detalhada<textarea id="adminDetalhes" rows="5" required></textarea></label>
+          <label>Itens inclusos <small>(um por linha)</small><textarea id="adminInclusos" rows="7" required></textarea></label>
+          <label>Observação extra<textarea id="adminExtra" rows="3" required></textarea></label>
+          <label class="controle-esgotado"><input type="checkbox" id="adminEsgotado" /><span>Marcar este serviço como esgotado</span></label>
+          <p class="mensagem-form" id="mensagemAdmin" role="status"></p>
+          <button type="submit" class="botao-principal" id="salvarServico">Salvar alterações</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
     <footer class="rodape">
-      <div>
-        <strong>Serviços de qualidade</strong>
-        <p>Feitos com carinho e criatividade</p>
-      </div>
-
-      <div>
-        <strong>Atendimento personalizado</strong>
-        <p>Seu projeto, do seu jeito</p>
-      </div>
-
-      <div>
-        <strong>Catálogo Lunar</strong>
-        <p>Clique no serviço e veja os detalhes</p>
-      </div>
+      <div><strong>Serviços de qualidade</strong><p>Feitos com carinho e criatividade</p></div>
+      <div><strong>Atendimento personalizado</strong><p>Seu projeto, do seu jeito</p></div>
+      <div><strong>Catálogo Lunar</strong><p>Monte seu pedido e envie pelo WhatsApp</p></div>
     </footer>
 
-    <script src="script.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
