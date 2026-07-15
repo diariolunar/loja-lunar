@@ -1,0 +1,402 @@
+.pagina-admin {
+  background:
+    radial-gradient(circle at 8% 10%, rgba(134, 54, 255, 0.16), transparent 26%),
+    radial-gradient(circle at 92% 30%, rgba(245, 200, 66, 0.1), transparent 22%),
+    #090014;
+}
+
+.admin-carregando {
+  align-items: center;
+  color: #d8cce5;
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+}
+
+.admin-lua {
+  animation: admin-pulso 1.4s ease-in-out infinite;
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+@keyframes admin-pulso {
+  50% { filter: drop-shadow(0 0 20px rgba(245, 200, 66, 0.7)); transform: scale(1.08); }
+}
+
+.admin-topo {
+  align-items: center;
+  backdrop-filter: blur(18px);
+  background: rgba(18, 0, 31, 0.92);
+  border-bottom: 1px solid rgba(245, 200, 66, 0.25);
+  display: grid;
+  gap: 24px;
+  grid-template-columns: auto 1fr auto;
+  padding: 16px 4vw;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.admin-marca img {
+  display: block;
+  height: 54px;
+  object-fit: contain;
+  width: auto;
+}
+
+.admin-topo-titulo .mini-selo {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.admin-topo-titulo h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  font-weight: 500;
+}
+
+.admin-topo-acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-topo-acoes a {
+  text-decoration: none;
+}
+
+.admin-container {
+  margin: 0 auto;
+  max-width: 1500px;
+  padding: 30px 4vw 60px;
+}
+
+.admin-resumo {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 22px;
+}
+
+.admin-resumo article {
+  background: linear-gradient(145deg, rgba(42, 7, 66, 0.96), rgba(22, 0, 36, 0.96));
+  border: 1px solid rgba(245, 200, 66, 0.18);
+  border-radius: 15px;
+  padding: 18px 20px;
+}
+
+.admin-resumo span {
+  color: #cfc1db;
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+}
+
+.admin-resumo strong {
+  color: #f5c842;
+  font-size: 1.8rem;
+}
+
+.admin-ferramentas {
+  align-items: end;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(245, 200, 66, 0.14);
+  border-radius: 16px;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(240px, 0.65fr) 1fr;
+  margin-bottom: 25px;
+  padding: 18px;
+}
+
+.admin-busca span {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+
+.admin-busca input {
+  background: #170025;
+  border: 1px solid rgba(245, 200, 66, 0.25);
+  border-radius: 11px;
+  color: #fff;
+  font: inherit;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.admin-busca input:focus {
+  border-color: #f5c842;
+  outline: 2px solid rgba(245, 200, 66, 0.16);
+}
+
+.admin-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.admin-filtro {
+  background: transparent;
+  border: 1px solid rgba(245, 200, 66, 0.22);
+  border-radius: 999px;
+  color: #eee4f5;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 9px 13px;
+}
+
+.admin-filtro:hover,
+.admin-filtro.ativo {
+  background: #f5c842;
+  color: #2a1600;
+  font-weight: 800;
+}
+
+.admin-layout {
+  align-items: start;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(460px, 0.95fr) minmax(520px, 1.05fr);
+}
+
+.admin-lista-area,
+.admin-editor {
+  background: rgba(18, 0, 31, 0.74);
+  border: 1px solid rgba(245, 200, 66, 0.16);
+  border-radius: 18px;
+  padding: 22px;
+}
+
+.admin-secao-titulo {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.admin-secao-titulo .mini-selo {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.admin-secao-titulo h2 {
+  font-family: Georgia, serif;
+  font-size: 1.55rem;
+}
+
+.admin-secao-titulo > span {
+  color: #cfc1db;
+  font-size: 0.8rem;
+}
+
+.admin-cards {
+  display: grid;
+  gap: 13px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-card {
+  background:
+    radial-gradient(circle at top right, rgba(134, 54, 255, 0.22), transparent 50%),
+    linear-gradient(160deg, #2a0742, #160024);
+  border: 1px solid rgba(245, 200, 66, 0.2);
+  border-radius: 15px;
+  color: #fff;
+  cursor: pointer;
+  min-height: 170px;
+  padding: 17px;
+  position: relative;
+  text-align: left;
+  transition: 0.2s ease;
+}
+
+.admin-card:hover,
+.admin-card:focus-visible,
+.admin-card.selecionado {
+  border-color: #f5c842;
+  box-shadow: 0 0 22px rgba(245, 200, 66, 0.18);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.admin-card.selecionado::after {
+  background: #f5c842;
+  border-radius: 999px;
+  color: #2a1600;
+  content: "Editando";
+  font-size: 0.67rem;
+  font-weight: 900;
+  padding: 5px 8px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  text-transform: uppercase;
+}
+
+.admin-card-icone {
+  font-size: 2.35rem;
+  margin-bottom: 11px;
+}
+
+.admin-card h3 {
+  font-size: 1rem;
+  margin: 0 0 5px;
+  padding-right: 45px;
+}
+
+.admin-card-subtitulo,
+.admin-card-categoria {
+  color: #cfc1db;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.admin-card-preco {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f5c842;
+  font-size: 0.8rem;
+  font-weight: 800;
+  margin-top: 12px;
+  padding-top: 10px;
+}
+
+.admin-card-status {
+  background: #6d3440;
+  border-radius: 999px;
+  color: #ffdfe5;
+  font-size: 0.64rem;
+  font-weight: 900;
+  padding: 5px 8px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  text-transform: uppercase;
+}
+
+.admin-card.selecionado .admin-card-status {
+  display: none;
+}
+
+.admin-sem-resultados {
+  color: #cfc1db;
+  padding: 50px 10px;
+  text-align: center;
+}
+
+.admin-editor {
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  position: sticky;
+  top: 98px;
+}
+
+.admin-editor-vazio {
+  color: #cfc1db;
+  min-height: 420px;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.admin-editor-vazio > span {
+  color: #f5c842;
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.admin-editor-vazio h2 {
+  color: #fff;
+  font-family: Georgia, serif;
+  font-size: 1.7rem;
+  margin-bottom: 9px;
+}
+
+.admin-editor-cabecalho {
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+}
+
+.admin-editor-icone {
+  border: 1px solid #f5c842;
+  border-radius: 50%;
+  display: grid;
+  flex: 0 0 70px;
+  font-size: 2.1rem;
+  height: 70px;
+  place-items: center;
+}
+
+.admin-editor-cabecalho .mini-selo {
+  display: block;
+  margin-bottom: 3px;
+}
+
+.admin-editor-cabecalho h2 {
+  font-family: Georgia, serif;
+  font-size: 1.6rem;
+}
+
+.admin-editor-cabecalho p {
+  color: #cfc1db;
+  font-size: 0.82rem;
+  margin-top: 3px;
+}
+
+.admin-salvar-area {
+  align-items: center;
+  background: #160024;
+  border-top: 1px solid rgba(245, 200, 66, 0.18);
+  bottom: -22px;
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  margin: 8px -22px -22px;
+  padding: 16px 22px;
+  position: sticky;
+}
+
+.admin-salvar-area > span {
+  color: #cfc1db;
+  font-size: 0.76rem;
+}
+
+.admin-salvar-area .botao-principal {
+  max-width: 240px;
+}
+
+@media (max-width: 1100px) {
+  .admin-layout { grid-template-columns: 1fr; }
+  .admin-editor { max-height: none; position: static; }
+}
+
+@media (max-width: 760px) {
+  .admin-topo { gap: 12px; grid-template-columns: auto 1fr; }
+  .admin-topo-titulo .mini-selo { display: none; }
+  .admin-topo-acoes { grid-column: 1 / -1; }
+  .admin-topo-acoes > * { flex: 1; text-align: center; }
+  .admin-resumo { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .admin-resumo article { padding: 13px; }
+  .admin-resumo span { font-size: 0.7rem; }
+  .admin-resumo strong { font-size: 1.4rem; }
+  .admin-ferramentas { grid-template-columns: 1fr; }
+  .admin-filtros { justify-content: flex-start; }
+  .admin-cards { grid-template-columns: 1fr; }
+  .admin-lista-area, .admin-editor { padding: 17px; }
+  .admin-salvar-area { align-items: stretch; flex-direction: column; margin: 8px -17px -17px; padding: 14px 17px; }
+  .admin-salvar-area .botao-principal { max-width: none; }
+}
+
+@media (max-width: 440px) {
+  .admin-marca img { height: 42px; }
+  .admin-topo-titulo h1 { font-size: 1.05rem; }
+  .admin-container { padding-inline: 14px; }
+}

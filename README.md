@@ -5,7 +5,9 @@ Catálogo de serviços da Loja Lunar com modalidades de serviço, carrinho, pedi
 ## Estrutura
 
 - `index.html`: interface do catálogo, carrinho e modais.
-- `app.js`: integração com Firebase, catálogo, carrinho e administração.
+- `app.js`: integração com Firebase, catálogo e carrinho.
+- `admin.html`: página administrativa com seleção por cards.
+- `admin.js`: autenticação e edição dos serviços no Firestore.
 - `style.css`: estilos responsivos.
 - `firestore.rules`: leitura pública dos serviços e escrita restrita ao administrador.
 

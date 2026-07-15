@@ -7,13 +7,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 import {
   collection,
-  doc,
   getFirestore,
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
-  updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -75,11 +72,6 @@ const elementos = {
   loginSenha: $("#loginSenha"),
   mensagemLogin: $("#mensagemLogin"),
   entrarAdmin: $("#entrarAdmin"),
-  modalAdmin: $("#modalAdmin"),
-  adminServico: $("#adminServico"),
-  formAdmin: $("#formAdmin"),
-  mensagemAdmin: $("#mensagemAdmin"),
-  salvarServico: $("#salvarServico"),
   toast: $("#toast"),
 };
 
@@ -147,11 +139,6 @@ function servicoComOpcao(servico, opcaoId) {
 function nomeItem(servico, opcaoId) {
   const opcao = opcaoDoServico(servico, opcaoId);
   return opcao ? `${nomeCompleto(servico)} — ${opcao.nome}` : nomeCompleto(servico);
-}
-
-function criarIdOpcao(nome, indice) {
-  const id = nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return id || `opcao-${indice + 1}`;
 }
 
 function renderizarCatalogo() {
@@ -453,82 +440,6 @@ async function finalizarPedido() {
   window.open(LINK_GRUPO_WHATSAPP, "_blank", "noopener,noreferrer");
 }
 
-function preencherListaAdmin() {
-  const selecionado = elementos.adminServico.value;
-  elementos.adminServico.replaceChildren();
-  estado.servicos.forEach((servico) => {
-    const option = document.createElement("option");
-    option.value = servico.id;
-    option.textContent = `${servico.esgotado ? "[ESGOTADO] " : ""}${nomeCompleto(servico)}`;
-    elementos.adminServico.appendChild(option);
-  });
-  if (estado.servicos.some((servico) => servico.id === selecionado)) elementos.adminServico.value = selecionado;
-  preencherFormularioAdmin();
-}
-
-function preencherFormularioAdmin() {
-  const servico = servicoDoCarrinho(elementos.adminServico.value) || estado.servicos[0];
-  if (!servico) return;
-  elementos.adminServico.value = servico.id;
-  $("#adminTituloCampo").value = servico.titulo;
-  $("#adminSubtitulo").value = servico.subtitulo || "";
-  $("#adminIcone").value = servico.icone;
-  $("#adminCategoria").value = servico.categoria;
-  $("#adminCategoriaNome").value = servico.categoriaNome;
-  $("#adminPontos").value = servico.pontos;
-  $("#adminValor").value = servico.valor;
-  $("#adminOpcoes").value = opcoesDoServico(servico).map((opcao) => `${opcao.nome} | ${opcao.pontos} | ${opcao.valor}`).join("\n");
-  $("#adminDescricao").value = servico.descricao;
-  $("#adminDetalhes").value = servico.detalhes;
-  $("#adminInclusos").value = servico.inclusos.join("\n");
-  $("#adminExtra").value = servico.extra;
-  $("#adminEsgotado").checked = Boolean(servico.esgotado);
-  elementos.mensagemAdmin.textContent = "";
-}
-
-async function salvarServico(evento) {
-  evento.preventDefault();
-  if (!estado.usuarioAdmin || estado.usuarioAdmin.email !== ADMIN_EMAIL) return;
-  const id = elementos.adminServico.value;
-  const inclusos = $("#adminInclusos").value.split("\n").map((item) => item.trim()).filter(Boolean);
-  elementos.salvarServico.disabled = true;
-  elementos.salvarServico.textContent = "Salvando…";
-  elementos.mensagemAdmin.textContent = "";
-  try {
-    const opcoes = $("#adminOpcoes").value.split("\n").map((linha) => linha.trim()).filter(Boolean).map((linha, indice) => {
-      const [nome, pontos, valor] = linha.split("|").map((parte) => parte.trim());
-      if (!nome || !pontos || !valor) throw new Error("invalid-options");
-      return { id: criarIdOpcao(nome, indice), nome, pontos, valor };
-    });
-    await updateDoc(doc(db, "servicos", id), {
-      titulo: $("#adminTituloCampo").value.trim(),
-      subtitulo: $("#adminSubtitulo").value.trim(),
-      icone: $("#adminIcone").value.trim(),
-      categoria: $("#adminCategoria").value,
-      categoriaNome: $("#adminCategoriaNome").value.trim(),
-      pontos: $("#adminPontos").value.trim(),
-      valor: $("#adminValor").value.trim(),
-      opcoes,
-      descricao: $("#adminDescricao").value.trim(),
-      detalhes: $("#adminDetalhes").value.trim(),
-      inclusos,
-      extra: $("#adminExtra").value.trim(),
-      esgotado: $("#adminEsgotado").checked,
-      atualizadoEm: serverTimestamp(),
-    });
-    elementos.mensagemAdmin.textContent = "Alterações salvas com sucesso.";
-    mostrarToast("Serviço atualizado.");
-  } catch (erro) {
-    console.error(erro);
-    elementos.mensagemAdmin.textContent = erro.message === "invalid-options"
-      ? "Use o formato: Nome | Pontos | Valor, uma modalidade por linha."
-      : "Não foi possível salvar. Verifique sua conexão e tente novamente.";
-  } finally {
-    elementos.salvarServico.disabled = false;
-    elementos.salvarServico.textContent = "Salvar alterações";
-  }
-}
-
 async function entrarAdmin(evento) {
   evento.preventDefault();
   elementos.mensagemLogin.textContent = "";
@@ -541,9 +452,7 @@ async function entrarAdmin(evento) {
       throw new Error("unauthorized");
     }
     elementos.formLogin.reset();
-    fecharModal(elementos.modalLogin);
-    preencherListaAdmin();
-    abrirModal(elementos.modalAdmin);
+    window.location.href = "admin.html";
   } catch (erro) {
     console.error("Falha no login administrativo:", erro.code);
     const mensagens = {
@@ -564,8 +473,7 @@ async function entrarAdmin(evento) {
 
 function abrirAcessoAdmin() {
   if (estado.usuarioAdmin?.email === ADMIN_EMAIL) {
-    preencherListaAdmin();
-    abrirModal(elementos.modalAdmin);
+    window.location.href = "admin.html";
   } else {
     elementos.mensagemLogin.textContent = "";
     abrirModal(elementos.modalLogin);
@@ -617,13 +525,6 @@ $("#limparCarrinho").addEventListener("click", () => {
 $("#finalizarPedido").addEventListener("click", finalizarPedido);
 $("#abrirAdmin").addEventListener("click", abrirAcessoAdmin);
 elementos.formLogin.addEventListener("submit", entrarAdmin);
-elementos.adminServico.addEventListener("change", preencherFormularioAdmin);
-elementos.formAdmin.addEventListener("submit", salvarServico);
-$("#sairAdmin").addEventListener("click", async () => {
-  await signOut(auth);
-  fecharModal(elementos.modalAdmin);
-  mostrarToast("Sessão administrativa encerrada.");
-});
 
 document.addEventListener("keydown", (evento) => {
   if (evento.key !== "Escape") return;
@@ -648,7 +549,6 @@ onSnapshot(
     elementos.estadoCatalogo.hidden = estado.servicos.length > 0;
     renderizarCatalogo();
     renderizarCarrinho();
-    if (estado.usuarioAdmin && elementos.modalAdmin.classList.contains("ativo")) preencherListaAdmin();
   },
   (erro) => {
     console.error(erro);

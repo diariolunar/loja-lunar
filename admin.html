@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#160024" />
+    <title>Administração | Loja Lunar</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png?v=1" />
+    <link rel="stylesheet" href="style.css?v=3" />
+    <link rel="stylesheet" href="admin.css?v=1" />
+  </head>
+  <body class="pagina-admin">
+    <div class="admin-carregando" id="adminCarregando">
+      <span class="admin-lua">🌙</span>
+      <p>Verificando acesso…</p>
+    </div>
+
+    <div id="adminAplicacao" hidden>
+      <header class="admin-topo">
+        <a href="index.html" class="admin-marca" aria-label="Voltar ao catálogo">
+          <img src="assets/logo-lunar.png" alt="Loja Lunar" width="2413" height="800" />
+        </a>
+        <div class="admin-topo-titulo">
+          <span class="mini-selo">✦ Área administrativa</span>
+          <h1>Painel da Loja Lunar</h1>
+        </div>
+        <div class="admin-topo-acoes">
+          <a href="index.html" class="botao-secundario">Ver catálogo</a>
+          <button type="button" class="botao-secundario" id="sairAdmin">Sair</button>
+        </div>
+      </header>
+
+      <main class="admin-container">
+        <section class="admin-resumo" aria-label="Resumo do catálogo">
+          <article><span>Total de serviços</span><strong id="resumoTotal">0</strong></article>
+          <article><span>Disponíveis</span><strong id="resumoDisponiveis">0</strong></article>
+          <article><span>Esgotados</span><strong id="resumoEsgotados">0</strong></article>
+        </section>
+
+        <section class="admin-ferramentas" aria-label="Localizar serviços">
+          <label class="admin-busca">
+            <span>Buscar serviço</span>
+            <input type="search" id="buscaAdmin" placeholder="Digite o título ou a categoria…" />
+          </label>
+          <div class="admin-filtros" role="group" aria-label="Filtrar cards">
+            <button type="button" class="admin-filtro ativo" data-categoria="todos">Todos</button>
+            <button type="button" class="admin-filtro" data-categoria="escrita">Escrita</button>
+            <button type="button" class="admin-filtro" data-categoria="leitura">Leitura</button>
+            <button type="button" class="admin-filtro" data-categoria="marketing">Marketing</button>
+            <button type="button" class="admin-filtro" data-categoria="design">Design</button>
+            <button type="button" class="admin-filtro" data-categoria="esgotados">Esgotados</button>
+          </div>
+        </section>
+
+        <div class="admin-layout">
+          <section class="admin-lista-area" aria-labelledby="listaTitulo">
+            <div class="admin-secao-titulo">
+              <div><span class="mini-selo">✦ Catálogo</span><h2 id="listaTitulo">Escolha um serviço</h2></div>
+              <span id="quantidadeVisivel">0 serviços</span>
+            </div>
+            <div class="admin-cards" id="adminCards" aria-live="polite"></div>
+            <p class="admin-sem-resultados" id="adminSemResultados" hidden>Nenhum serviço encontrado.</p>
+          </section>
+
+          <aside class="admin-editor" id="adminEditor" aria-labelledby="editorTitulo">
+            <div class="admin-editor-vazio" id="adminEditorVazio">
+              <span>✦</span>
+              <h2>Selecione um card</h2>
+              <p>As opções de edição do serviço escolhido aparecerão aqui.</p>
+            </div>
+
+            <div id="adminEditorConteudo" hidden>
+              <header class="admin-editor-cabecalho">
+                <div class="admin-editor-icone" id="editorIcone">🌙</div>
+                <div><span class="mini-selo">✦ Editando serviço</span><h2 id="editorTitulo"></h2><p id="editorCategoria"></p></div>
+              </header>
+
+              <form id="formAdmin" class="form-admin">
+                <div class="campo-duplo">
+                  <label>Título<input id="adminTituloCampo" required /></label>
+                  <label>Subtítulo<input id="adminSubtitulo" /></label>
+                </div>
+                <div class="campo-triplo">
+                  <label>Ícone<input id="adminIcone" maxlength="8" required /></label>
+                  <label>Categoria<select id="adminCategoria"><option value="escrita">Escrita</option><option value="leitura">Leitura</option><option value="marketing">Marketing</option><option value="design">Design</option></select></label>
+                  <label>Nome da categoria<input id="adminCategoriaNome" required /></label>
+                </div>
+                <div class="campo-duplo">
+                  <label>Valor em pontos<input id="adminPontos" required /></label>
+                  <label>Valor em dinheiro<input id="adminValor" required /></label>
+                </div>
+                <label>Modalidades <small>(nome | pontos | valor, uma por linha; deixe vazio se não houver)</small><textarea id="adminOpcoes" rows="4" placeholder="Composição | 200 P | R$8,00"></textarea></label>
+                <label>Descrição curta<textarea id="adminDescricao" rows="3" required></textarea></label>
+                <label>Descrição detalhada<textarea id="adminDetalhes" rows="5" required></textarea></label>
+                <label>Itens inclusos <small>(um por linha)</small><textarea id="adminInclusos" rows="7" required></textarea></label>
+                <label>Observação extra<textarea id="adminExtra" rows="3" required></textarea></label>
+                <label class="controle-esgotado"><input type="checkbox" id="adminEsgotado" /><span>Marcar este serviço como esgotado</span></label>
+                <p class="mensagem-form" id="mensagemAdmin" role="status"></p>
+                <div class="admin-salvar-area">
+                  <span id="estadoEdicao">Nenhuma alteração pendente</span>
+                  <button type="submit" class="botao-principal" id="salvarServico">Salvar alterações</button>
+                </div>
+              </form>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="admin.js?v=1"></script>
+  </body>
+</html>
